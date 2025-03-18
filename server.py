@@ -100,8 +100,10 @@ def get_transfer_station(start_code: str, end_code: str):
 # Helper function to extract city name (before the comma)
 def extract_city(place: str) -> str:
     return place.split(",")[0].strip() if "," in place else place.strip()
+
 # Fetch private bus details from API
 def get_private_bus_details(departure: str, destination: str) -> bool:
+    print("Fetching private bus details")
     url = f"https://busapi.amithv.xyz/api/v1/schedules?departure={departure}&destination={destination}"
     response = requests.get(url)
 
@@ -113,9 +115,11 @@ def get_private_bus_details(departure: str, destination: str) -> bool:
 
 # Fetch KSRTC bus details from local server
 def get_ksrtc_bus_details(departure: str, destination: str) -> bool:
-    url = f"http://127.0.0.1:9000/api/v1/ksrtc?source={departure}&destination={destination}"
+    print("Fetching KSRTC bus details")
+    url = f"http://127.0.0.1:9000/api/v1/ksrtc/?source={departure}&destination={destination}"
     response = requests.get(url)
-
+    print("url:", url)
+    print(response.json())
     if response.status_code == 200 and response.json():
         return True  
     return False  
@@ -165,8 +169,8 @@ def get_best_route(start: str = Query(...), end: str = Query(...)):
         }
 
     # Check if bus (private or KSRTC) is needed for start and end locations
-    bus_needed_start = is_bus_available(start_city, start_station["station_name"])
-    bus_needed_end = is_bus_available(end_station["station_name"], end_city)
+    bus_needed_start = is_bus_available(start_city, start_station["station_name"].capitalize())
+    bus_needed_end = is_bus_available(end_station["station_name"].capitalize(), end_city)
 
     route_type = []
     if (
