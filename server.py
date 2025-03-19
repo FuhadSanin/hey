@@ -5,7 +5,6 @@ from typing import Dict, Any
 
 app = FastAPI()
 
-
 # Database connection
 def get_db_connection():
     return psycopg2.connect(
@@ -118,8 +117,6 @@ def get_ksrtc_bus_details(departure: str, destination: str) -> bool:
     print("Fetching KSRTC bus details")
     url = f"http://127.0.0.1:9000/api/v1/ksrtc/?source={departure}&destination={destination}"
     response = requests.get(url)
-    print("url:", url)
-    print(response.json())
     if response.status_code == 200 and response.json():
         return True  
     return False  
